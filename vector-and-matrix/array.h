@@ -1,12 +1,14 @@
-#include <stdlib.h>
-#include "xmalloc.c@"
-#include "xmalloc.h@"
+#ifndef H_ARRAY_H
+#define H_ARRAY_H
+
+#include "xmalloc.h"
+
 
 //Defining the macros to make vectors and free vectors
 #define make_vector(v, n) ((v) = xmalloc((n) * sizeof *(v)))
 #define free_vector(v) do {free(v); v=NULL;} while (0)
 
-//Defining the macros to make matrices and free matrices.
+//Making matrices
 #define make_matrix(a, m, n) do { \
     size_t make_matrix_loop_counter;  \
     make_vector(a, (m) + 1);  \
@@ -15,4 +17,15 @@
         (a)[m] = NULL; \
 } while (0)                                                                            
 
+//Freeing matrices
+#define free_matrix(a) do { \
+    if (a != NULL){ \
+    size_t make_matrix_loop_counter; \
+        for (make_matrix_loop_counter = 0; (a)[make_matrix_loop_counter] != NULL; make_matrix_loop_counter++)
+        free_vector((a)[make_matrix_loop_counter]); \
+    free_vector(a); \
+    a = NULL;\
+    } \
+} while (0) 
 
+#endif 
