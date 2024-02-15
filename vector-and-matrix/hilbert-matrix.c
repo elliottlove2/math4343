@@ -27,7 +27,7 @@ int main()
             printf("%f ", H[i][j]);
         printf("\n");
     }
-    // free_matrix(H);
+    free_matrix(H);
 
     return 0;
 }
