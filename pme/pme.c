@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <math.h>
 #include "problem-spec.h"
-#include "problem-spec.c"
 
 
 
