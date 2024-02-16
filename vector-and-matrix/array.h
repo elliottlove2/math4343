@@ -27,4 +27,27 @@
     } \
 } while (0) 
 
+
+
+#define print_vector(fmt, v, n) do { \
+    size_t print_vector_loop_counter; \
+    for (print_vector_loop_counter = 0; print_vector_loop_counter< (n); print_vector_loop_counter++)\
+    { \
+        printf(fmt, (v)[print_vector_loop_counter]); \
+    } \
+    putchar('\n');\
+} while(0)
+
+
+
+#define print_matrix(fmt, a, n) do { \
+    size_t print_matrix_loop_counter; \
+    for (print_matrix_loop_counter = 0; print_matrix_loop_counter< (n); print_matrix_loop_counter++)\
+    { \
+        print_vector(fmt, a[make_matrix_loop_counter], n); \
+    } \
+    putchar('\n');\
+} while(0)
+
+
 #endif 
