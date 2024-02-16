@@ -1,1 +1,0 @@
-/home/eelove/math4343/vector-and-matrix/array.h
