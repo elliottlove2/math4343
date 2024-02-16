@@ -63,7 +63,7 @@ printf("s: number of time slices. ");
 
 
 /* This pme1_sweep function will implement the Siedman Sweep method to solve the problem pme1.  */
-static void pme1_sweep(struct problem_spec *spec, double T, int n, int s, int m)
+static void pme1_sweep(struct problem_spec *spec, double T, int n, int s, int m, char *gv_filename)
 {
     //We will store the solution in an 2n x 2s matrix called u. nx2s is the dimension because the siedman sweep uses 1/2 time steps.
     double **u;
@@ -73,6 +73,16 @@ static void pme1_sweep(struct problem_spec *spec, double T, int n, int s, int m)
     double tstep = T/2*s;
     double xstep = 2/n;
     double r = (tstep*2)/(2*(xstep)*(xstep));
+    FILE *fp;
+
+    //geomview stuff
+    if ((fp = fopen(gv_filename, "w"))==NULL)
+    {
+        fprintf(stderr, "unable to open file '%s' for writing \n", gv_filename);
+        return;
+    }
+
+
 
     //We will fill u[x][t] with the initial conditions and boundary conditinos from the problem spec structure.
     for (int j = 0; j < n; j++)
@@ -115,6 +125,7 @@ int main(int argc, char **argv){
     double T;
     int n;
     int s;
+    int m = 3;
     if (argc != 4){
         show_usage(argv[0]);
         return EXIT_FAILURE;
@@ -135,6 +146,6 @@ int main(int argc, char **argv){
         return EXIT_FAILURE;
     }
 
-
+   // pme1_sweep(pme1(), T, n, s, m, );
 
 }
