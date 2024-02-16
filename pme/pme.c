@@ -63,7 +63,7 @@ printf("s: number of time slices. ");
 
 
 /* This pme1_sweep function will implement the Siedman Sweep method to solve the problem pme1.  */
-static void pme1_sweep(struct problem_spec *spec, double T, int n, int s)
+static void pme1_sweep(struct problem_spec *spec, double T, int n, int s, int m)
 {
     //We will store the solution in an 2n x 2s matrix called u. nx2s is the dimension because the siedman sweep uses 1/2 time steps.
     double **u;
@@ -96,7 +96,9 @@ static void pme1_sweep(struct problem_spec *spec, double T, int n, int s)
     {
         for (int  k = 1; k < 2 * s -1; k++)
         {
-
+            double RHS;
+            RHS = r * pow(u[j-1][k+1] , m) + u[j][k] - r * pow((u[j][k]), m) + r*pow(u[j+1][k], m);
+            u[j][k] = newton(RHS, r, m);
         }
     }
 
