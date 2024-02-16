@@ -30,13 +30,11 @@ static double newton(double c, double r, int m)
 
 //This function will calculate the error for the problem pme1. 
 
-/* static get_error(struct problem_spec *spec, double *u, int n, double T)
+static get_error(struct problem_spec *spec, double *u, int n, double T)
 {
-        double relative = 0;
-        double absolute = 0;
-
+       
 }
-*/
+
 
 //This will provide the user with instructions on using the program and the command line arguments necessary. 
 static void show_usage(char *progname)
@@ -58,6 +56,7 @@ static void pme1_sweep(struct problem_spec *spec, double T, int n, int s)
     //Time step and space step
     double tstep = T/2*s;
     double xstep = 2/n;
+    double r = (tstep*2)/(2*(xstep)*(xstep));
 
     //We will fill u[x][t] with the initial conditions and boundary conditinos from the problem spec structure.
     for (int j = 0; j < n; j++)
@@ -65,20 +64,26 @@ static void pme1_sweep(struct problem_spec *spec, double T, int n, int s)
         double x = -1.0 + (j * xstep);
         u[j][0] = spec -> ic(x);
     }
-    for (int j = 0; j< s && (j%2 == 0); j++)
+    for (int j = 0; j< 2 * s && (j%2 == 0); j++)
     {
         double t = j * tstep;
 
         u[0][j] = spec -> bcL(t);
         u[n-1][j] = spec -> bcR(t);
     }
-    
+
+    u[0][2*s-1] = spec -> bcL(tstep * (2*s-1));
+    u[n-1][2*s-1] = spec -> bcR(tstep * (2*s-1));
+
     //Now we can fill in the rest of u with the Seidman Sweep iterations. 
+    for (int j = 1; j < n-1; j++)
+    {
+        for (int  k = 1; k < 2 * s -1; k++)
+        {
 
+        }
+    }
 
-
-    
-    
 
 }
 
