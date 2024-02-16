@@ -51,21 +51,21 @@ printf("s: number of time slices. ");
 /* This pme1_sweep function will implement the Siedman Sweep method to solve the problem pme1.  */
 static void pme1_sweep(struct problem_spec *spec, double T, int n, int s)
 {
-    //We will store the solution in an n x s matrix called u.
+    //We will store the solution in an 2n x 2s matrix called u. nx2s is the dimension because the siedman sweep uses 1/2 time steps.
     double **u;
-    make_matrix(u, n, s);
+    make_matrix(u, n, 2*s);
 
     //Time step and space step
-    double tstep = T/s;
+    double tstep = T/2*s;
     double xstep = 2/n;
 
     //We will fill u[x][t] with the initial conditions and boundary conditinos from the problem spec structure.
-    for (int j = 0; j< n; j++)
+    for (int j = 0; j < n; j++)
     {
         double x = -1.0 + (j * xstep);
         u[j][0] = spec -> ic(x);
     }
-    for (int j = 0; j< s; j++)
+    for (int j = 0; j< s && (j%2 == 0); j++)
     {
         double t = j * tstep;
 
@@ -73,9 +73,8 @@ static void pme1_sweep(struct problem_spec *spec, double T, int n, int s)
         u[n-1][j] = spec -> bcR(t);
     }
     
-    //Now we can perform the main siedman sweep. We iterate through space first.
-    // We solve an entire "time column" at a fixed x then move to the next time column in our grid. 
-    
+    //Now we can fill in the rest of u with the Seidman Sweep iterations. 
+
 
 
     
