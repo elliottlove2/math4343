@@ -27,6 +27,15 @@ static double newton(double c, double r, int m)
     return old_guess;
 }
 
+//This file writes the geomview script
+static void plot_curve(FILE *fp, double *u, int n, int steps, int k)
+{
+    for (int j = 0; j< n + 2; j++)
+    {
+        fprintf(fp, "%g %g %g\n", (double)k/steps, (double)j/(n+1), u[j]);
+    }
+}
+
 
 //This function will calculate the error for the problem pme1. 
 
