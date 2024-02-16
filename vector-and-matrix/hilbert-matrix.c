@@ -19,12 +19,14 @@ double **hilbert_matrix(int n)
 int main()
 {
     double **H;
-    int n = 8;
+    int n;
+    printf("Input n:\n");
+    scanf("%d", &n);
     H = hilbert_matrix(n);
     for (int i = 0; i < n; i++) 
     {
         for (int j = 0; j < n; j++) 
-            printf("%f ", H[i][j]);
+            printf("%.2f ", H[i][j]);
         printf("\n");
     }
     free_matrix(H);
