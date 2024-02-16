@@ -29,13 +29,14 @@ static double newton(double c, double r, int m)
 
 
 //This function will calculate the error for the problem pme1. 
-static get_error(struct problem_spec *spec, double *u, int n, double T)
+
+/* static get_error(struct problem_spec *spec, double *u, int n, double T)
 {
         double relative = 0;
         double absolute = 0;
 
 }
-
+*/
 
 //This will provide the user with instructions on using the program and the command line arguments necessary. 
 static void show_usage(char *progname)
@@ -47,15 +48,37 @@ printf("s: number of time slices. ");
 }
 
 
-/* This pme1_sweep function will implement the Siedman Sweep method to solve the problem pme1. */
+/* This pme1_sweep function will implement the Siedman Sweep method to solve the problem pme1.  */
 static void pme1_sweep(struct problem_spec *spec, double T, int n, int s)
 {
     //We will store the solution in an n x s matrix called u.
-    double u[n][s];
+    double **u;
+    make_matrix(u, n, s);
+
+    //Time step and space step
     double tstep = T/s;
     double xstep = 2/n;
 
-    //
+    //We will fill u[x][t] with the initial conditions and boundary conditinos from the problem spec structure.
+    for (int j = 0; j< n; j++)
+    {
+        double x = -1.0 + (j * xstep);
+        u[j][0] = spec -> ic(x);
+    }
+    for (int j = 0; j< s; j++)
+    {
+        double t = j * tstep;
+
+        u[0][j] = spec -> bcL(t);
+        u[n-1][j] = spec -> bcR(t);
+    }
+    
+    //Now we can perform the main siedman sweep. We iterate through space first.
+    // We solve an entire "time column" at a fixed x then move to the next time column in our grid. 
+    
+
+
+    
     
 
 }
