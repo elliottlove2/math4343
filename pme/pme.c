@@ -32,7 +32,14 @@ static double newton(double c, double r, int m)
 
 static get_error(struct problem_spec *spec, double *u, int n, double T)
 {
-       
+       double err = 0.0;
+       for (int j=0; j<n+2; j++)
+       {
+            double x = -1 + (2/n)*j;
+            double diff = fabs(u[j] - spec -> u_exact(x,T));
+            if (diff > err)
+                err = diff;
+       }
 }
 
 
@@ -87,10 +94,6 @@ static void pme1_sweep(struct problem_spec *spec, double T, int n, int s)
 
 }
 
-
-
-
-
 /*The main function requires three arguments, T n and s. 
 T is the upper end of the time range,
 n is the number of grid points in the x direction,
@@ -120,7 +123,6 @@ int main(int argc, char **argv){
         show_usage(argv[0]);
         return EXIT_FAILURE;
     }
-
 
 
 
