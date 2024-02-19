@@ -32,9 +32,9 @@ static double newton(double c, double r, int m)
 //This file writes the geomview script
 static void plot_curve(FILE *fp, double **u, int n, int s)
 {
-    for (int k=0; k <= 2*s && k%2 == 0; k ++)
+    for (int k=0; k < 2*s; k = k + 2)
     {
-        for (int j = 0; j< n + 2; j++)
+        for (int j = 0; j< n; j++)
         {
             fprintf(fp, "%g %g %g\n", (double)k/s, (double)j/(n+1), u[j][k]);
         }
@@ -43,14 +43,13 @@ static void plot_curve(FILE *fp, double **u, int n, int s)
 
 //This function will calculate the error for the problem pme1. 
 
-static double get_error(struct problem_spec *spec, double **u, int n, long long int T)
+static double get_error(struct problem_spec *spec, double **u, int n, int T, int s)
 {
     double err = 0.0;
-    for (int j=0; j<n+2; j++)
+    for (int j=0; j<n; j++)
     {   
-        long long int index = 2*T;
-        double x = -1 + (2/n)*j;
-        double diff = fabs(u[j][index] - spec -> u_exact(x,T));
+        double x = -1 + (2.0/n)*j;
+        double diff = fabs(u[j][2*s - 1] - spec -> u_exact(x,T));
         if (diff > err)
             err = diff;
     }
@@ -73,15 +72,15 @@ printf("s: number of time slices. ");
 /* This pme1_sweep function will implement the Siedman Sweep method to solve the problem pme1.  */
 static void pme_sweep(struct problem_spec *spec, double T, int n, int s, int m, char *gv_filename)
 {
-    //We will store the solution in an 2n x 2s matrix called u. nx2s is the dimension because the siedman sweep uses 1/2 time steps.
+    //We will store the solution in an n x 2s matrix called u. nx2s is the dimension because the siedman sweep uses 1/2 time steps.
     double **u;
     make_matrix(u, n, 2*s);
     FILE *fp;
 
     //Time step and space step
-    double tstep = T/2*s;
-    double xstep = 2/n;
-    printf("lf", xstep);
+    double tstep = (double)T/2*s;
+    double xstep = (double)2/n;
+    printf("%lf", xstep);
     double r = (tstep*2)/(2*(xstep)*(xstep));
     //geomview stuff
     if ((fp = fopen(gv_filename, "w"))==NULL)
@@ -101,7 +100,7 @@ static void pme_sweep(struct problem_spec *spec, double T, int n, int s, int m, 
         double x = -1.0 + (j * xstep);
         u[j][0] = spec -> ic(x);
     }
-    for (int j = 0; j< 2 * s && (j%2 == 0); j++)
+    for (int j = 0; j< 2 * s; j=j+2)
     {
         double t = j * tstep;
 
@@ -109,13 +108,13 @@ static void pme_sweep(struct problem_spec *spec, double T, int n, int s, int m, 
         u[n-1][j] = spec -> bcR(t);
     }
 
-    u[0][2*s] = spec -> bcL(tstep * (2*s-1));
-    u[n][2*s] = spec -> bcR(tstep * (2*s-1));
+    u[0][2*s - 1] = spec -> bcL(tstep * (2*s));
+    u[n-1][2*s - 1] = spec -> bcR(tstep * (2*s));
 
     //Now we can fill in the rest of u with the Seidman Sweep iterations. 
-    for (int j = 1; j < n; j++)
+    for (int j = 1; j < n - 1; j++)
     {
-        for (int  k = 1; k < 2 * s; k++)
+        for (int  k = 1; k < 2 * s - 1; k++)
         {
             double RHS;
             RHS = r * pow(u[j-1][k+1] , m) + u[j][k] - r * pow((u[j][k]), m) + r*pow(u[j+1][k], m);
@@ -130,7 +129,7 @@ static void pme_sweep(struct problem_spec *spec, double T, int n, int s, int m, 
     
     if (spec -> u_exact != NULL)
     {
-        double err = get_error(spec, u, n, T);
+        double err = get_error(spec, u, n, T, s);
         printf("max error at time %g is %g\n", T, err);
     }
 
