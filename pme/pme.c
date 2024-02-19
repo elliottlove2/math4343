@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <math.h>
 #include "problem-spec.h"
+#include "array.h"
+
 
 
 
