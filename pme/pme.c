@@ -83,7 +83,6 @@ static void pme_sweep(struct problem_spec *spec, double T, int n, int s, int m, 
     
   
 
-    printf("%lf", xstep);
     double r = (tstep*2)/(2*(xstep)*(xstep));
     //geomview stuff
     if ((fp = fopen(gv_filename, "w"))==NULL)
