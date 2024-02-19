@@ -80,6 +80,9 @@ static void pme_sweep(struct problem_spec *spec, double T, int n, int s, int m, 
     //Time step and space step
     double tstep = T/2.0 * s;
     double xstep = 2.0/n;
+    
+  
+
     printf("%lf", xstep);
     double r = (tstep*2)/(2*(xstep)*(xstep));
     //geomview stuff
