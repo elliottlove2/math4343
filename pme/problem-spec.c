@@ -5,7 +5,7 @@
 
 //This function returns barenblatt's solution to the pme at a point (x,t)
 
-static double barenblatt (double x, double t, double m, double c, double delta)
+static double barrenblatt (double x, double t, double m, double c, double delta)
 {
     double beta, alpha, gamma, result, bracket;
     beta = 1 / (m+1);
@@ -32,18 +32,18 @@ static double pme1_exact(double x, double t)
 
 //This function gives us the initial condition at t=0.
 static double pme1_ic(double x){
-    return pme_exact(x, 0);
+    return pme1_exact(x, 0);
 }
 
 
 //This function provides the boundary condition on the left.
 static double pme1_bcL(double t){
-    return pme_exact(-1, t);
+    return pme1_exact(-1, t);
 }
 
 //This function provides the boundary condition on the right. 
 static double pme1_bcR(double t){
-    return pme_exact(1, t);
+    return pme1_exact(1, t);
 }
 
 /* This structure contains the details of the problem, interval of interest, initial and boundary conditions,
@@ -60,5 +60,6 @@ struct problem_spec *pme1(void){
     printf("\n pme1.\n");
     return &spec;
 }
+
 
 
