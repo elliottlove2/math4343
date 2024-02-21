@@ -1,5 +1,5 @@
-OFILES = hilbert-matrix.o xmalloc.o
-TARGET = hilbert
+OFILES = orthogonal.o xmalloc.o
+TARGET = orthogonal
 CC = gcc
 CFLAGS = -Wall -pedantic -std=c99 -O2
 $(TARGET) : $(OFILES)
@@ -8,5 +8,5 @@ $(TARGET) : $(OFILES)
 clean:
 		rm -f $(OFILES) $(TARGET)
 
-hilbert-matrix.o: hilbert-matrix.c array.h xmalloc.h
+orthogonal.o: orthogonal.c array.h xmalloc.h
 xmalloc.o: xmalloc.c xmalloc.h
