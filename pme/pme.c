@@ -36,7 +36,7 @@ static void plot_curve(FILE *fp, double **u, int n, int s)
     {
         for (int j = 0; j< n; j++)
         {
-            fprintf(fp, "%g %g %g\n", (double)k/s, (double)j/(n+1), u[j][k]);
+            fprintf(fp, "%g %g %g\n", (double)k/s, (double)j/(n), u[j][k]);
         }
     }
 }
