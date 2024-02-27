@@ -54,18 +54,21 @@ void gramSchmidt(double **A, int m, int n)
     }
 
 
-    /*Within the loops we will need information on the current column of A, 
-    the previous (orthogonalized) column, and the new orthogonalied column of A. */
-    double *formerColumn;
-    make_vector(formerColumn, m);
-    double *currentColumn;
-    make_vector(currentColumn, m);
-    double *newColumn;
-    make_vector(newColumn, m);
-    /*The first column will be the q from earlier, the normalized first column of A.*/
-    formerColumn = q;
+    /*Suppose the unchanged k_th column of A is x_k, and the new column is q_k.
+    Then q_k is equal to x_k - p_{k-1}, normalized. 
+    To do this calculation, at each step we will need the current column vector, a vector to store the new column,
+    and the vector p. The vector p will be calculated by storing the jth column of A as q, then adding (x_k * q)q to p. 
+    Once we do this process for all columns of A up to q_{k-1}, we will have p. */
 
-    //This first loop will iterate through the n columns of A. 
+    //Initializing p, q, and x.
+    double *q;
+    make_vector(q, m);
+    double *x;
+    make_vector(x, m);
+    double *p;
+    make_vector(p, m);
+
+    // With this loop we are iterating through the columns of A. 
     for (int i = 1; i < n; i++)
     {
        
