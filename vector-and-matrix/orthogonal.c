@@ -8,7 +8,7 @@
 
 double dot(double *v, double *u, int n)
 {
-    double result;
+    double result = 0;
     for (int i = 0; i<n; i++)
     {
         result += v[i]*u[i];
@@ -19,7 +19,7 @@ double dot(double *v, double *u, int n)
 void normalize(double *v, int n)
 {
     double norm;
-    double sumOfSquares;
+    double sumOfSquares = 0;
 
     for (int i=0; i < n; i++)
     {
@@ -37,20 +37,20 @@ void normalize(double *v, int n)
 
 void gramSchmidt(double **A, int m, int n)
 {
-    //This function takes in A and changes A into an orthogonal matrix.
-    //First we will normalize the columns of A
-    double *q;
-    make_vector(q, m);
+    //This function takes in a mxn matrix A and changes A into an orthogonal matrix.
+
+    double *firstColumn;
+    make_vector(firstColumn, m);
 
     //Normalizing the first column
     for (int i = 0; i < m; i++)
     {
-        q[i] = A[i][0];
+        firstColumn[i] = A[i][0];
     }
-    normalize(q, m);
+    normalize(firstColumn, m);
     for (int i = 0; i < m; i++)
     {
-        A[i][0] = q[i];
+        A[i][0] = firstColumn[i];
     }
 
 
@@ -60,9 +60,7 @@ void gramSchmidt(double **A, int m, int n)
     and the vector p. The vector p will be calculated by storing the jth column of A as q, then adding (x_k * q)q to p. 
     Once we do this process for all columns of A up to q_{k-1}, we will have p. */
 
-    //Initializing p, q, and x.
-    double *q;
-    make_vector(q, m);
+    //Initializing p and x.
     double *x;
     make_vector(x, m);
     double *p;
@@ -71,10 +69,46 @@ void gramSchmidt(double **A, int m, int n)
     // With this loop we are iterating through the columns of A. 
     for (int i = 1; i < n; i++)
     {
-       
+        //x is the ith column of A
+        for (int j=0; j < m; j++)
+        {
+            x[j] = A[j][i];
+        }
+        //These loop creates a vector p
+        for (int c = 0; c < i; c++)
+        {
+            double *q;
+            make_vector(q, m);
+
+            for (int j = 0; j < m; j++)
+            {
+                q[j] = A[j][c];
+            }
+            for (int j = 0; j < m; j++)
+            {
+                p[j] += (dot(x, q, m)) * q[j];
+            }
+
+            free_vector(q);
+        }
+
+        double *newVector;
+        make_vector(newVector, m);
+        for (int j = 0; j < m; j++)
+        {
+            newVector[j] = x[j] - p[j];
+        }
+        normalize(newVector, m);
+        for (int j = 0; j < m; j++)
+        {
+            A[j][i] = newVector[j];
+        }
+        free_vector(newVector);
+
+
+
+
     }
-
-
 
 
 }
@@ -87,12 +121,24 @@ int main()
     make_matrix(m, 4, 3);
 
     //Defining a to test the algorithm
-    double a[3][4] = {
-        {1, -1, 4},
-        {1, 4, -2},
-        {1, 4, 2},
-        {1, -1, 0}
-    };
+    double **a;
+    make_matrix(a, 4, 3);
+    a[0][0] = 1; a[0][1] = -1; a[0][2] = 4;
+    a[1][0] = 1; a[1][1] = 4;  a[1][2] = -2;
+    a[2][0] = 1; a[2][1] = 4;  a[2][2] = 2;
+    a[3][0] = 1; a[3][1] = -1; a[3][2] = 0;
+
+
+    
+    gramSchmidt(a, 4, 3);
+    for (int i = 0; i < 4; i++) 
+    {
+        for (int j = 0; j < 3; j++) 
+            printf("%.2lf ", a[i][j]);
+        printf("\n");
+    }
+
+
     
     
 

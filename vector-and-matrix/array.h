@@ -42,9 +42,9 @@
 
 #define print_matrix(fmt, a, n) do { \
     size_t print_matrix_loop_counter; \
-    for (print_matrix_loop_counter = 0; print_matrix_loop_counter< (n); print_matrix_loop_counter++)\
+    for (print_matrix_loop_counter = 0; print_matrix_loop_counter < (n); print_matrix_loop_counter++)\
     { \
-        print_vector(fmt, a[make_matrix_loop_counter], n); \
+        print_vector(fmt, a[print_matrix_loop_counter], n); \
     } \
     putchar('\n');\
 } while(0)

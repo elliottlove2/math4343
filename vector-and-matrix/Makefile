@@ -8,5 +8,5 @@ $(TARGET) : $(OFILES)
 clean:
 		rm -f $(OFILES) $(TARGET)
 
-orthogonal.o: orthogonal.c array.h xmalloc.h
+orthogonal.o : orthogonal.c array.h xmalloc.h
 xmalloc.o: xmalloc.c xmalloc.h

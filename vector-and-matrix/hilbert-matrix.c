@@ -23,7 +23,9 @@ int main()
     printf("Input n:\n");
     scanf("%d", &n);
     H = hilbert_matrix(n);
-    print_matrix(.2%lf, H, n);
+    print_matrix("%.2lf", H, n);
+
+    free_matrix(H);
 
     return 0;
 }
