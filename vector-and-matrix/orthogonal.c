@@ -65,6 +65,10 @@ void gramSchmidt(double **A, int m, int n)
     make_vector(x, m);
     double *p;
     make_vector(p, m);
+    for (int j = 0; j < m; j++)
+    {
+        p[j] = 0;
+    }
 
     // With this loop we are iterating through the columns of A. 
     for (int i = 1; i < n; i++)
@@ -85,12 +89,13 @@ void gramSchmidt(double **A, int m, int n)
                 q[j] = A[j][c];
             }
             for (int j = 0; j < m; j++)
-            {
+            {    
                 p[j] += (dot(x, q, m)) * q[j];
             }
 
             free_vector(q);
         }
+
 
         double *newVector;
         make_vector(newVector, m);
@@ -104,15 +109,10 @@ void gramSchmidt(double **A, int m, int n)
             A[j][i] = newVector[j];
         }
         free_vector(newVector);
-
-
-
-
     }
 
-
+    free_vector(p);
 }
-
 
 int main()
 {
@@ -128,8 +128,6 @@ int main()
     a[2][0] = 1; a[2][1] = 4;  a[2][2] = 2;
     a[3][0] = 1; a[3][1] = -1; a[3][2] = 0;
 
-
-    
     gramSchmidt(a, 4, 3);
     for (int i = 0; i < 4; i++) 
     {
@@ -137,10 +135,6 @@ int main()
             printf("%.2lf ", a[i][j]);
         printf("\n");
     }
-
-
     
-    
-
     return 0;
 }
