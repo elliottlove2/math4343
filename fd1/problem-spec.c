@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "problem-spec.h"
+
 // heat1( ): quite a basic 1-D heat equation with exact solution
 static double heat1_exact(double x, double t)
 {
@@ -19,6 +20,7 @@ static double heat1_bcR(double t)
 {
 return heat1_exact(1,t);
 }
+
 struct problem_spec *heat1(void)
 {
 static struct problem_spec spec = { // C99-style initialization!
