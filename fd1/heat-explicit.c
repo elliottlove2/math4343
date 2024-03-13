@@ -138,10 +138,10 @@ int main(int argc, char **argv)
 		show_usage(argv[0]);
 		return EXIT_FAILURE;
 	}
-	heat_implicit(heat1(), T, n, steps, "im1.gv");
-	heat_implicit(heat2(), T, n, steps, "im2.gv");
-	heat_implicit(heat3(), T, n, steps, "im3.gv");
-	heat_implicit(heat4(), T, n, steps, "im4.gv");
+	heat_explicit(heat1(), T, n, steps, "im1.gv");
+	heat_explicit(heat2(), T, n, steps, "im2.gv");
+	heat_explicit(heat3(), T, n, steps, "im3.gv");
+	heat_explicit(heat4(), T, n, steps, "im4.gv");
 
 	return EXIT_SUCCESS;
 }
