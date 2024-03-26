@@ -1,4 +1,4 @@
-OFILES = mesh-demo.o problem-spec.o xmalloc.o mesh-to-eps.o triangle.o
+OFILES = mesh-demo.o problem-spec.o xmalloc.o mesh-to-eps.o triangle.o mesh.o
 TARGET = mesh-demo
 CC = gcc
 CFLAGS = -Wall -pedantic -std=c99 -O2
@@ -14,3 +14,4 @@ problem-spec.o: problem-spec.c array.h xmalloc.h problem-spec.h
 xmalloc.o: xmalloc.c xmalloc.h
 mesh-to-eps.o: mesh-to-eps.c mesh-to-eps.h mesh.h problem-spec.h
 triangle.o: triangle.c triangle.h
+mesh.o: mesh.c triangle.h xmalloc.h array.h mesh.h problem-spec.h 

@@ -33,6 +33,6 @@ struct mesh {
     int nelems;
 };
 
-struct mesh *make_mesh(struct problems_spec *spec, double a);
+struct mesh *make_mesh(struct problem_spec *spec, double a);
 void free_mesh(struct mesh *mesh);
 #endif /*H_MESH_H*/
