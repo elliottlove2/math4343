@@ -158,12 +158,105 @@ void free_annulus(struct problem_spec *spec)
 */
 struct problem_spec *three_holes(int n)
 {
-        TODO 
+	double Pi = 4*atan(1);
+	//defining s and r. s is the the side length of each square. 
+	//The radius of the inner circles are r = s/4. 
+	//Note that the centers of the holes lie at the points (+- s/2, +-s/2).
+    double s = .64;
+	double r = s/4;
+	struct problem_spec *spec = xmalloc(sizeof *spec);
+
+	make_vector(spec->points, 3*n + 6);
+	make_vector(spec->segments, 3*n + 6);
+	make_vector(spec->holes, 3);
+
+	/* Defining the points for the vertices and for the holes.
+	The first 3n points will be for the three holes, the last 6 points will be the square vertices.
+	*/
+	for(int i = 0; i < n; i++)
+	{
+		//theta will be the current angle for each circle.
+		double theta = 2 * Pi * i / n;
+		spec -> points[i].point_no = i;
+		spec -> points[i + n].point_no = i + n;
+		spec -> points[i + 2*n].point_no = i + 2*n;
+
+		spec->points[i].x = r*cos(theta) - s/2;
+		spec->points[i].y = r*sin(theta) + s/2;
+		spec->points[i + n].x = r*cos(theta) -s/2;
+		spec->points[i + n].y = r*sin(theta) - s/2;
+		spec->points[i + 2*n].x = r*cos(theta) + s/2;
+		spec->points[i + 2*n].y = r*sin(theta) + s/2;
+
+		spec->segments[i].bc = FEM_BC_DIRICHLET;
+		spec->segments[i + n].bc = FEM_BC_DIRICHLET;
+		spec->segments[i + 2*n].bc = FEM_BC_DIRICHLET;
+	}
+	
+	for(int i = 3*n; i<3*n + 6; i++)
+	{
+		spec -> points[i].point_no = i;
+		spec -> points[i].bc = FEM_BC_DIRICHLET;
+	}
+
+	spec -> points[3*n].x = -s;
+	spec -> points[3*n].y = s;
+	spec -> points[3*n + 1].x = -s;
+	spec -> points[3*n + 1].y = -s;
+	spec -> points[3*n + 2].x = 0;
+	spec -> points[3*n + 2].y = -s;
+	spec -> points[3*n + 3].x = 0;
+	spec -> points[3*n + 3].y = 0;
+	spec -> points[3*n + 4].x = s;
+	spec -> points[3*n + 4].y = 0;
+	spec -> points[3*n + 5].x = s;
+	spec -> points[3*n + 5].y = s;
+
+	//Defining the segments
+	for (int i = 0; i < n; i++)
+	{
+		spec->segments[i].segment_no = i;
+		spec->segments[i].point_no_1  = i;
+		spec->segments[i].point_no_2  = i+1;
+		spec->segments[i].bc = FEM_BC_DIRICHLET;
+		spec->segments[i+n].segment_no = i+n;
+		spec->segments[i+n].point_no_1  = i+n;
+		spec->segments[i+n].point_no_2  = i+n+1;
+		spec->segments[i+n].bc = FEM_BC_DIRICHLET;
+		spec->segments[i+n].segment_no = i+2*n;
+		spec->segments[i+n].point_no_1  = i+2*n;
+		spec->segments[i+n].point_no_2  = i+2*n+1;
+		spec->segments[i+n].bc = FEM_BC_DIRICHLET;
+	}
+	spec->segments[n-1].point_no_2 -= n;
+	spec->segments[2*n-1].point_no_2 -= n;
+	spec->segments[3*n-1].point_no_2 -= n;
+
+	//Defining the holes. 
+	spec -> holes[0].x = -s/2;
+	spec -> holes[0].y = s/2;
+	spec -> holes[1].x = -s/2;
+	spec -> holes[1].y = -s/2;
+	spec -> holes[2].x = s/2;
+	spec -> holes[2].y = -s/2;
+
+	spec->npoints = 3*n + 6;
+	spec->nsegments = 3*n + 6;
+	spec->nholes = 3;
+
+	spec->f = spec->g = spec->h = spec->eta = spec->u_exact = NULL;
+	printf("domain is an L with 3 holes (which are really %d-gons) "
+		"with radius %g\n", n, r);
 	return spec;
 }
 
 void free_three_holes(struct problem_spec *spec)
 {
-        TODO	
+     if (spec != NULL) {
+		free_vector(spec->points);
+		free_vector(spec->segments);
+		free_vector(spec->holes);
+		free(spec);
+	}
 }
 
