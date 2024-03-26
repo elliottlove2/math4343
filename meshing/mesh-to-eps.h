@@ -6,3 +6,4 @@
 void mesh_to_eps(struct mesh *mesh, char *outfile);
 
 #endif /* H_MESH_TO_EPS_H */
+

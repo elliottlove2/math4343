@@ -56,9 +56,9 @@ int main(int argc, char **argv)
 	putchar('\n');
 
 	/* --- three_holes() ------------------------------- */
-	new_spec = three_holes(100);
-	do_demo(new_spec, a, "triangle_with_holes.eps");
-	free_three_holes(new_spec);
+	spec = three_holes(100);
+	do_demo(spec, a, "triangle_with_holes.eps");
+	free_three_holes(spec);
 	putchar('\n');
 
 	return EXIT_SUCCESS;
