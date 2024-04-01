@@ -30,26 +30,23 @@ static double newton(double c, double r, int m)
 }
 
 //This file writes the geomview script
-static void plot_curve(FILE *fp, double **u, int n, int s)
+static void plot_curve(FILE *fp, double *u, int n, int steps, int k)
 {
-    for (int k=0; k < 2*s; k = k + 2)
+    for (int j = 0; j< n+2; j++)
     {
-        for (int j = 0; j< n; j++)
-        {
-            fprintf(fp, "%g %g %g\n", (double)k/s, (double)j/(n), u[j][k]);
-        }
+        fprintf(fp, "%g %g %g\n", (double)k/steps, (double)j/(n+1), u[j]);
     }
 }
 
 //This function will calculate the error for the problem pme1. 
 
-static double get_error(struct problem_spec *spec, double **u, int n, int T, int s)
+static double get_error(struct problem_spec *spec, double *u, int n, double t)
 {
     double err = 0.0;
-    for (int j=0; j<n; j++)
+    for (int j=0; j<n+2; j++)
     {   
-        double x = -1 + (2.0/n)*j;
-        double diff = fabs(u[j][2*s - 1] - spec -> u_exact(x,T));
+        double x = spec -> a + ((spec->b - spec->a)/(n+1))*j;
+        double diff = fabs(u[j] - spec -> u_exact(x,t));
         if (diff > err)
             err = diff;
     }
@@ -70,75 +67,81 @@ printf("s: number of time slices. ");
 
 
 /* This pme1_sweep function will implement the Siedman Sweep method to solve the problem pme1.  */
-static void pme_sweep(struct problem_spec *spec, double T, int n, int s, int m, char *gv_filename)
+static void pme(struct problem_spec *spec,
+		double T, int n, int steps, int m, char *gv_filename)
 {
-    //We will store the solution in an n x 2s matrix called u. nx2s is the dimension because the siedman sweep uses 1/2 time steps.
-    double **u;
-    make_matrix(u, n, 2*s);
-    FILE *fp;
+	FILE *fp;
+	double *u, *v, *d, *c;
+	double dx = (spec->b - spec->a)/(n+1);
+	double dt = T/steps;
+	double r = dt/2*(dx*dx);
+	if ((fp = fopen(gv_filename, "w")) == NULL) {
+		fprintf(stderr, "unable to open file `%s' for writing\n",
+				gv_filename);
+		return;
+	}
+	fprintf(fp, "# geomview script written by the function %s()\n",
+			__func__);	// begin geomview script
+	fprintf(fp, "{ appearance { +edge }\n");
+	fprintf(fp, "MESH %d %d\n", n+2, steps+1);
+	printf("%g < x < %g,  0 < t < %g,  dx = %g, dt = %g,  "
+			"r = dt/dx^2 = %g\n",
+			spec->a, spec->b, T, dx, dt, r);
+	make_vector(u, n+2);
 
-    //Time step and space step
-    double tstep = T/2.0 * s;
-    double xstep = 2.0/n;
-    
-  
+    //for loop to initialize u with initial conditions (time slice k=0)
+	for (int j = 0; j < n+2; j++) {
+		double x = spec->a + (spec->b - spec->a)/(n+1)*j;
+		u[j] = spec->ic(x);
+	}
+	plot_curve(fp, u, n, steps, 0);
 
-    double r = (tstep*2)/(2*(xstep)*(xstep));
-    //geomview stuff
-    if ((fp = fopen(gv_filename, "w"))==NULL)
+    //for loop to iterate through the time slices and perform the forward and reverse sweeps. 
+    //start with time slices (k=1) and iterate up until you get to final time slice (k=steps)
+    for (int k = 1; k <= steps; k++)
     {
-        fprintf(stderr, "unable to open file '%s' for writing \n", gv_filename);
-        return;
-    }
-    fprintf(fp, "# geomview script written by the function %s() \n", gv_filename);
-    fprintf(fp, "{ appearance { +edge } \n");
-    fprintf(fp, "MESH %d %d\n", n+2, s+1);
-    printf("%g < x < %g, 0 < t < %g, dx = %g, dt = %g, r = dt/dx^2 = %g\n",
-             (double)-1, (double)1, T, xstep, T/s, r);
-    
-    //We will fill u[x][t] with the initial conditions and boundary conditinos from the problem spec structure.
-    for (int j = 0; j < n; j++)
-    {
-        double x = -1.0 + (j * xstep);
-        u[j][0] = spec -> ic(x);
-    }
-    for (int j = 0; j< 2 * s; j=j+2)
-    {
-        double t = j * tstep;
+        //current time.
+        double t = T*k / steps;
+        //filling in left and right nodes with boundary conditions.
+        u[0] = bcL(t);
+        u[n+1] = bcR(t);
 
-        u[0][j] = spec -> bcL(t);
-        u[n-1][j] = spec -> bcR(t);
-    }
+        //for loops to update the row u with the values for the new time slice. 
+        //Since this is a Seidman Sweep scheme we go forward (up half a slice) and then
+        //we go backwards (up another half slice with a reverse sweep motion.)
 
-    u[0][2*s - 1] = spec -> bcL(tstep * (2*s));
-    u[n-1][2*s - 1] = spec -> bcR(tstep * (2*s));
-
-    //Now we can fill in the rest of u with the Seidman Sweep iterations. 
-    for (int j = 1; j < n - 1; j++)
-    {
-        for (int  k = 1; k < 2 * s - 1; k++)
+        //forward sweep
+        for (int j = 1; j<= n; j++)
         {
-            double RHS;
-            RHS = r * pow(u[j-1][k+1] , m) + u[j][k] - r * pow((u[j][k]), m) + r*pow(u[j+1][k], m);
-            u[j][k] = newton(RHS, r, m);
+            double x = spec->a + dx * j;
+            double RHS = r * pow(u[j-1], m) + u[j] - r*pow(u[j],m) + r*pow(u[j+1],m); 
+            u[j] = newton(RHS, r, m);
         }
-    }
+        for (int j = n; j>= 1; j--)
+        {
+            double RHS = r * pow(u[j-1], m) + u[j] - r*pow(u[j], m) + (r * pow(u[j+1], m));
+            u[j] = newton(RHS, r, m);
+        }
 
-    plot_curve(fp, u, n, s);
-    fprintf(fp, "}\n");
-    fclose(fp);
-    printf("geomview script written to file %s\n", gv_filename);
-    
-    if (spec -> u_exact != NULL)
-    {
-        double err = get_error(spec, u, n, T, s);
-        printf("max error at time %g is %g\n", T, err);
-    }
+        plot_curve(fp, u, n, steps, k);
+	}   
 
-    free_matrix(u);
-    putchar('\n');
 
+	fprintf(fp, "}\n");	// end geomview script
+	fclose(fp);
+	printf("geomview script written to file %s\n", gv_filename);
+	if (spec->u_exact != NULL) {	
+		double err = get_error(spec, u, n, T);
+		printf("max error at time %g is %g \n", T, err);
+	}
+	free_vector(u);
+	putchar('\n');
 }
+
+
+
+
+
 
 /*The main function requires three arguments, T n and s. 
 T is the upper end of the time range,
@@ -171,7 +174,8 @@ int main(int argc, char **argv){
         return EXIT_FAILURE;
     }
 
-   pme_sweep(pme1(), T, n, s, m, "im1.gv");
+   pme(pme1(), T, n, s, m, "im1.gv");
+   //pme(pme2(), T, n, s, m, "im2.gv");
 
    return EXIT_SUCCESS;
 
