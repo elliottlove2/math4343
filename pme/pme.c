@@ -117,6 +117,7 @@ static void pme(struct problem_spec *spec,
             double RHS = r * pow(u[j-1], m) + u[j] - r*pow(u[j],m) + r*pow(u[j+1],m); 
             u[j] = newton(RHS, r, m);
         }
+        //reverse sweep
         for (int j = n; j>= 1; j--)
         {
             double RHS = r * pow(u[j-1], m) + u[j] - r*pow(u[j], m) + (r * pow(u[j+1], m));
