@@ -19,15 +19,16 @@ int main()
         for (int j=0; j<5; j++)
         {
             printf("%g", a[i][j]);
-            if (a[i][j] != 0)
+            if (abs(a[i][j]<.0001))
             {
                 nnz = nnz + 1;
             }
         }
         printf("\n");
     }
-    printf("\n");
+    printf("%d", nnz);
     printf("The number of non-zero entries in a is %d", nnz);
+    printf("%d", nnz);
 
     //Creating Ai, Ap, Ax
     double *Ax;
