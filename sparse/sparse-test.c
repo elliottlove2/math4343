@@ -34,6 +34,7 @@ int main()
     }
 
     printf("\n");
+    printf("The number of non-zero entries is %d.\n", nnz);
    
     //Creating Ai, Ap, Ax
     double *Ax;
