@@ -2,29 +2,26 @@
 #include "sparse.h"
 #include "array.h"
 
+
 void sparse_unpack(double **a, int m, int n, int *Ap, int *Ai, double *Ax)
 {
-	for (int i = 0; i<m; i++)
+	int i, j, k;
+	for (i = 0; i < m; i++)
 	{
-		for (int j = 0; j<n; j++)
+		for (j = 0; j < n; j++)
 		{
-			a[i][j] = 0;
+			a[i][j] = 0.0;
 		}
-	}
-
-	for (int i = 0; i < m; i++)	
+	}	
+	for (j = 0; j < n; j++)
 	{
-		for (int j = 0; j<m; j++)
-		{	
-			for (int k = Ap[j]; k<Ap[j+1]; k++)
-			{
-				i = Ai[k];
-				a[i][j] = Ax[k];
-			}
+		for (k = Ap[j]; k < Ap[j+1]; k++)
+		{
+			i = Ai[k];
+			a[i][j] = Ax[k];
 		}
 	}
 }
-
 
 void sparse_pack(double **a, int m, int n, int *Ap, int *Ai, double *Ax)
 {
@@ -36,9 +33,9 @@ void sparse_pack(double **a, int m, int n, int *Ap, int *Ai, double *Ax)
 		Ap[j] = -1;
 	}
 
-	for (int i = 0; i<m; i++)
+	for (int j = 0; j<n; j++)
 	{
-		for (int j = 0; j<n; j++)
+		for (int i = 0; i<m; i++)
 		{
 			if (a[i][j] != 0)
 			{
@@ -62,5 +59,5 @@ void sparse_pack(double **a, int m, int n, int *Ap, int *Ai, double *Ax)
 	}
 
 	//Filling in the (m+1)th entry of Ap with the number of elements in Ax.
-	Ap[m] = k;
+	Ap[n] = k;
 }
