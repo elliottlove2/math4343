@@ -96,8 +96,7 @@ static void pme(struct problem_spec *spec,
 	}
 	plot_curve(fp, u, n, steps, 0);
 
-    //for loop to iterate through the time slices and perform the forward and reverse sweeps. 
-    //start with time slices (k=1) and iterate up until you get to final time slice (k=steps)
+    //boundary conditions   
     for (int k = 1; k <= steps; k++)
     {
         //current time.
@@ -176,7 +175,7 @@ int main(int argc, char **argv){
     }
 
    pme(pme1(), T, n, s, m, "im1.gv");
-   //pme(pme2(), T, n, s, m, "im2.gv");
+   pme(pme2(), T, n, s, m, "im2.gv");
 
    return EXIT_SUCCESS;
 
