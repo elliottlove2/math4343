@@ -35,7 +35,8 @@ int main(int argc, char **argv)
     //getting the nth quadrature table from gauss-quad.c
     struct Gauss_qdat *table;
     table = gauss_qdat(&n);
-
+    struct Gauss_qdat *original_table = table;
+   
     //estimating the integral of f(x) on [-1,1], using n quadrature point. 
     double sum = 0;
     while (table -> w != -1)
@@ -44,16 +45,18 @@ int main(int argc, char **argv)
         table++;
     }
 
-    printf("The estimation for the integral of 1+x+x^2+x^3 on [-1,1] is %lf\n", sum);
+    printf("The estimation for the integral of 1+x+x^2+x^3 on [-1,1] is %lf\n\n", sum);
 
     //estimating the integral on [2,5] using a change of variables. 
     sum = 0.0;
-    table = 0;
+    //resetting the table. 
+    table = original_table;
     while (table -> w != -1)
     {
-        sum += table -> w * f(((double)5/2 - (double)2/2) + ((double)5/2 - (double)2/2) * (table -> p));
+        sum += table -> w * f(((double)5/2 + (double)2/2) + ((double)5/2 - (double)2/2) * (table -> p));
         table++;
     }
+    sum *= (double)3/2;
     printf("The estimation for the integral of 1+x+x^2+x^3 on [2,5] is %lf\n", sum);
 }
 
