@@ -7,7 +7,7 @@ $(TARGET) : $(OFILES)
 		$(CC) $(OFILES) -o $@ $(LIBS)
 		
 clean:
-		rm -f $(OFILES) $(TARGET)
+		rm -f $(OFILES) $(TARGET) im1.gv im2.gv
 
 pme.o: pme.c problem-spec.h
 xmalloc.o: xmalloc.c xmalloc.h

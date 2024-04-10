@@ -59,10 +59,10 @@ static double get_error(struct problem_spec *spec, double *u, int n, double t)
 //This will provide the user with instructions on using the program and the command line arguments necessary. 
 static void show_usage(char *progname)
 {
-printf("Usage: ./%s T n s \n", progname);
-printf("T: time domain is 0 < t < T ");
-printf("n: n is the number of grid points in the space dimension.");
-printf("s: number of time slices. ");
+printf("Usage: %s T n s \n", progname);
+printf("T: time domain is 0 < t < T \n");
+printf("n: n is the number of grid points in the space dimension.\n");
+printf("s: number of time slices.\n");
 }
 
 
