@@ -61,17 +61,38 @@ struct problem_spec *pme1(void){
     return &spec;
 }
 
-//NOT COMPLETED
-struct problem_spec *pme1(void){
+//This function gives us the initial condition at t=0.
+static double pme2_ic(double x){
+    if ((x>0) && (x<1/2))
+        return 1/2;
+    else if ((x<0) && (x>-1/2))
+        return -1/2;
+    else 
+        return 0;
+}
+
+
+//This function provides the boundary condition on the left.
+static double pme2_bcL(double t){
+    return 0;
+}
+
+//This function provides the boundary condition on the right. 
+static double pme2_bcR(double t){
+    return 0;
+}
+
+
+struct problem_spec *pme2(void){
     static struct problem_spec spec = {
         .a = -1.0,
         .b = 1.0,
-        .ic = pme1_ic,
-        .bcL = pme1_bcL,
-        .bcR = pme1_bcR,
-        .u_exact = pme1_exact,
+        .ic = pme2_ic,
+        .bcL = = pme2_bcL,
+        .bcR = pme2_bcR,
+        .u_exact = NULL,
     };
-    printf("\n pme1.\n");
+    printf("\n pme2.\n");
     return &spec;
 }
 
