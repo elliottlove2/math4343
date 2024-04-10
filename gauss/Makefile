@@ -1,5 +1,5 @@
-OFILES = gauss-quad-demo.c gauss-quad.c xmalloc.o
-TARGET = demo
+OFILES = gauss-quad-demo.o gauss-quad.o xmalloc.o
+TARGET = gauss-quad-demo
 CC = gcc
 CFLAGS = -Wall -pedantic -std=c99 -O2
 LIBS = -lm

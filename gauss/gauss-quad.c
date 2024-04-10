@@ -233,3 +233,4 @@ struct Gauss_qdat *gauss_qdat(int *n)
 		*n = ntables;
 	return QuadTables[*n];
 }
+
