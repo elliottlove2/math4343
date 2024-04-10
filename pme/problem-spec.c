@@ -61,5 +61,18 @@ struct problem_spec *pme1(void){
     return &spec;
 }
 
+//NOT COMPLETED
+struct problem_spec *pme1(void){
+    static struct problem_spec spec = {
+        .a = -1.0,
+        .b = 1.0,
+        .ic = pme1_ic,
+        .bcL = pme1_bcL,
+        .bcR = pme1_bcR,
+        .u_exact = pme1_exact,
+    };
+    printf("\n pme1.\n");
+    return &spec;
+}
 
 
