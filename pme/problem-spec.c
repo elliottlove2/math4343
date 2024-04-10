@@ -88,7 +88,7 @@ struct problem_spec *pme2(void){
         .a = -1.0,
         .b = 1.0,
         .ic = pme2_ic,
-        .bcL = = pme2_bcL,
+        .bcL = pme2_bcL,
         .bcR = pme2_bcR,
         .u_exact = NULL,
     };

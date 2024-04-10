@@ -71,7 +71,7 @@ static void pme(struct problem_spec *spec,
 		double T, int n, int steps, int m, char *gv_filename)
 {
 	FILE *fp;
-	double *u, *v, *d, *c;
+	double *u;
 	double dx = (spec->b - spec->a)/(n+1);
 	double dt = T/steps;
 	double r = dt/2*(dx*dx);
@@ -102,8 +102,8 @@ static void pme(struct problem_spec *spec,
         //current time.
         double t = T*k / steps;
         //filling in left and right nodes with boundary conditions.
-        u[0] = bcL(t);
-        u[n+1] = bcR(t);
+        u[0] = spec->bcL(t);
+        u[n+1] = spec->bcR(t);
 
         //for loops to update the row u with the values for the new time slice. 
         //Since this is a Seidman Sweep scheme we go forward (up half a slice) and then
@@ -112,7 +112,6 @@ static void pme(struct problem_spec *spec,
         //forward sweep
         for (int j = 1; j<= n; j++)
         {
-            double x = spec->a + dx * j;
             double RHS = r * pow(u[j-1], m) + u[j] - r*pow(u[j],m) + r*pow(u[j+1],m); 
             u[j] = newton(RHS, r, m);
         }
@@ -149,6 +148,7 @@ n is the number of grid points in the x direction,
 s is the number of steps in the time direction.  */
 int main(int argc, char **argv){
     struct problem_spec *pme1(void);
+    struct problem_spec *pme2(void);
     char *endptr;
     double T;
     int n;
