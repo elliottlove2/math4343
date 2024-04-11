@@ -16,8 +16,8 @@ static double newton(double c, double r, int m)
     double error = 1.0;
 
     //Using the magnitude of c as an initial guess. I have not explored which potential intial guesses might optimize this algorithm. 
-    double old_guess = fabs(c);
-    double new_guess = fabs(c);
+    double old_guess = c;
+    double new_guess = c;
 
     //While loop to iteratively adjust guess towards the solution
     while(error > allowed_error){
@@ -72,9 +72,9 @@ static void pme(struct problem_spec *spec,
 {
 	FILE *fp;
 	double *u;
-	double dx = (spec->b - spec->a)/(n+1);
-	double dt = T/steps;
-	double r = dt/2*(dx*dx);
+	double dx = (spec->b - spec->a)/(n+1.0);
+	double dt = (double)T/steps;
+	double r = dt/(2*(pow(dx, 2)));
 	if ((fp = fopen(gv_filename, "w")) == NULL) {
 		fprintf(stderr, "unable to open file `%s' for writing\n",
 				gv_filename);
@@ -91,7 +91,7 @@ static void pme(struct problem_spec *spec,
 
     //for loop to initialize u with initial conditions (time slice k=0)
 	for (int j = 0; j < n+2; j++) {
-		double x = -1.0 + ((2.0)/(double)(n+1))*j;
+		double x = -1.0 + ((2.0)/(n+1.0))*j;
 		u[j] = spec->ic(x);
 	}
 	plot_curve(fp, u, n, steps, 0);
@@ -112,7 +112,7 @@ static void pme(struct problem_spec *spec,
         //forward sweep
         for (int j = 1; j<= n; j++)
         {
-            double RHS = r * pow(u[j-1], m) + u[j] - r*pow(u[j],m) + r*pow(u[j+1],m); 
+            double RHS = r * pow(u[j-1], m) + u[j] - r * pow(u[j],m) + r * pow(u[j+1],m); 
             u[j] = newton(RHS, r, m);
         }
         //reverse sweep
