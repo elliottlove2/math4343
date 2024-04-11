@@ -45,7 +45,7 @@ static double get_error(struct problem_spec *spec, double *u, int n, double t)
     double err = 0.0;
     for (int j=0; j<n+2; j++)
     {   
-        double x = spec -> a + ((spec->b - spec->a)/(n+1))*j;
+        double x = -1.0 + ((2.0)/(double)(n+1))*j;
         double diff = fabs(u[j] - spec -> u_exact(x,t));
         if (diff > err)
             err = diff;
@@ -91,7 +91,7 @@ static void pme(struct problem_spec *spec,
 
     //for loop to initialize u with initial conditions (time slice k=0)
 	for (int j = 0; j < n+2; j++) {
-		double x = spec->a + (spec->b - spec->a)/(n+1)*j;
+		double x = -1.0 + ((2.0)/(double)(n+1))*j;
 		u[j] = spec->ic(x);
 	}
 	plot_curve(fp, u, n, steps, 0);

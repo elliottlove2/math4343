@@ -63,10 +63,10 @@ struct problem_spec *pme1(void){
 
 //This function gives us the initial condition at t=0.
 static double pme2_ic(double x){
-    if ((x>0) && (x<1/2))
-        return 1/2;
-    else if ((x<0) && (x>-1/2))
-        return -1/2;
+    if ((x>0) && (x <= 1.0/2))
+        return .5;
+    else if ((x<0) && (x>-1.0/2.0))
+        return -.5;
     else 
         return 0;
 }
